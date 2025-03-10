@@ -1,0 +1,223 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserClient {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String
+  email       String  @unique
+  password    String
+  banner      String? // Opcional
+  mercadoPagoSubscriptionId String?
+  
+  create_at   DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  orders      Order[]
+  downloads   DownloadLog[]
+
+  // Assinatura vinculada diretamente ao usuário
+  planId      String? @db.Uuid // ID do plano atual (se tiver)
+  plan        Plan? @relation(fields: [planId], references: [id])
+  status      String?  // "active", "canceled", "expired"
+  startDate   DateTime?
+  endDate     DateTime?
+
+  @@map("usersClient")
+}
+
+model UserDesigner {
+  id        String  @id @default(uuid()) @db.Uuid
+  name      String
+  email     String  @unique
+  password  String
+  banner    String?
+
+  create_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  posts     PostDesignerProduct[]
+  orders    Order[] @relation("DesignerOrders")
+
+  @@map("usersDesigner")
+}
+
+model Category {
+  id        String  @id @default(uuid()) @db.Uuid
+  name      String  @unique
+
+  create_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  products  PostDesignerProduct[]
+
+  @@map("categories")
+}
+
+model PostDesignerProduct {
+  id          String  @id @default(uuid()) @db.Uuid
+  name_art    String
+  banner      String
+  price       Int
+  status      Boolean @default(false)
+  draft       Boolean @default(true)
+
+  create_at   DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  category_id String   @db.Uuid
+
+  designer    UserDesigner @relation(fields: [designer_id], references: [id])
+  designer_id String @db.Uuid
+
+  orders      Order[] @relation("ProductOrders")
+
+  @@map("postsDesigner")
+}
+
+model Order {
+  id               String  @id @default(uuid()) @db.Uuid
+  status           String
+  transaction_id   String?
+  total_amount     Int
+
+  create_at        DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  userClient       UserClient @relation(fields: [user_client_id], references: [id])
+  user_client_id   String @db.Uuid
+
+  product          PostDesignerProduct @relation(fields: [product_id], references: [id], name: "ProductOrders")
+  product_id       String @db.Uuid
+
+  userDesigner     UserDesigner @relation(fields: [user_designer_id], references: [id], name: "DesignerOrders")
+  user_designer_id String @db.Uuid
+
+  @@map("orders")
+}
+
+model Plan {
+  id           String     @id @default(uuid()) @db.Uuid
+  name         String     @unique
+  price        Decimal
+  tag          String     @unique  // Ex: "pixel-prime", "pixel-elite", "pixel-supremo"
+  benefits     String     // Lista de benefícios do plano
+  maxDownloads Int        // Número máximo de downloads permitidos por mês
+
+  users        UserClient[] // Adicionando relação com os usuários
+
+  @@map("plans")
+}
+
+model DownloadLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  imageId   String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  user      UserClient @relation(fields: [userId], references: [id])
+
+  @@map("download_logs")
+}
+
+// ----------------------> ANTES DA ATT <--------------------------------------//
+// model UserClient {
+//   id        String  @id @default(uuid()) @db.Uuid
+//   name      String
+//   email     String  @unique
+//   password  String
+//   banner    String? // Opcional
+
+//   create_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+
+//   orders    Order[] // Relacionamento com os pedidos
+
+//   @@map("usersClient")
+// }
+
+// model UserDesigner {
+//   id        String  @id @default(uuid()) @db.Uuid
+//   name      String
+//   email     String  @unique
+//   password  String
+//   banner    String? // Opcional
+
+//   create_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+
+//   posts     PostDesignerProduct[]
+//   orders    Order[] @relation("DesignerOrders") // Corrige a relação
+
+//   @@map("usersDesigner")
+// }
+
+// model Category {
+//   id        String  @id @default(uuid()) @db.Uuid
+//   name      String  @unique
+
+//   create_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+
+//   products  PostDesignerProduct[]
+
+//   @@map("categories")
+// }
+
+// model PostDesignerProduct {
+//   id          String  @id @default(uuid()) @db.Uuid
+//   name_art    String
+//   banner      String
+//   price       Int  // Agora o preço será armazenado em centavos (OBS: Dentro do código vai haver alteração para reais)
+//   status      Boolean @default(false) // O post só é publicado quando estiver true
+//   draft       Boolean @default(true)  // Rascunho sempre como true, se enviar, muda para false
+
+//   create_at   DateTime @default(now())
+//   updated_at  DateTime @updatedAt
+
+//   // Relacionamento com Categoria
+//   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+//   category_id String   @db.Uuid
+
+//   // Relacionamento com o Designer
+//   designer    UserDesigner @relation(fields: [designer_id], references: [id])
+//   designer_id String @db.Uuid
+
+//   // Relacionamento com pedidos
+//   orders      Order[] @relation("ProductOrders") // Corrigindo a relação
+
+//   @@map("postsDesigner")
+// }
+
+// model Order {
+//   id               String  @id @default(uuid()) @db.Uuid
+//   status          String  // Status do pagamento: "pending", "approved", "rejected"
+//   transaction_id  String? // ID da transação no Mercado Pago
+//   total_amount    Int     // Valor total do pedido (em centavos)
+  
+//   create_at       DateTime @default(now())
+//   updated_at      DateTime @updatedAt
+
+//   // Relacionamento com quem comprou (UserClient)
+//   userClient      UserClient @relation(fields: [user_client_id], references: [id])
+//   user_client_id  String @db.Uuid
+
+//   // Relacionamento com o produto comprado
+//   product         PostDesignerProduct @relation(fields: [product_id], references: [id], name: "ProductOrders")
+//   product_id      String @db.Uuid
+
+//   // Relacionamento com o Designer que criou o produto
+//   userDesigner    UserDesigner @relation(fields: [user_designer_id], references: [id], name: "DesignerOrders")
+//   user_designer_id String @db.Uuid
+
+//   @@map("orders")
+// }
