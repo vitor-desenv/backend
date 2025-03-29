@@ -15,7 +15,6 @@ import { AuthUserDesignerController } from './controllers/users/AuthUserDesigner
 import { DetailsUserClientController } from './controllers/users/DetailsUserClientController';
 import { DetailsUserDesignerController } from './controllers/users/DetailsUserDesignerController';
 
-
 import { CreateCategoryController } from './controllers/users/CreateCategoryController';
 import { ListCategoryController } from './controllers/users/ListCategoryController';
 
@@ -68,6 +67,8 @@ router.post('/category', myAuthenticated, new CreateCategoryController().handle 
 router.get('/category', myAuthenticated, new ListCategoryController().handle )
 
 // ------------------------ ROTAS PRODUTOS  ----------------------------------- //
-router.post('/product', myAuthenticated, upload.single('file'), new CreateProductController().handle )
+
+router.post('/product', myAuthenticated, new CreateProductController().handle )
+//router.post('/product', myAuthenticated, upload.single('file'), new CreateProductController().handle ) UTILIZANDO O MULTER
 
 export { router };
