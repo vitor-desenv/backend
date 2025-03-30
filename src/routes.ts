@@ -8,6 +8,7 @@ import { myAuthenticated } from './middlewares/myAuthenticated';
 
 import { CreateUserClientController } from './controllers/users/createUserClientController';
 import { CreateUserDesignerController } from './controllers/users/createUserDesignerController';
+import { DeleteUserController } from './controllers/users/DeleteUsersController';
 
 import { AuthUserClientController } from './controllers/users/AuthUserClientController';
 import { AuthUserDesignerController } from './controllers/users/AuthUserDesignerController';
@@ -19,6 +20,8 @@ import { CreateCategoryController } from './controllers/users/CreateCategoryCont
 import { ListCategoryController } from './controllers/users/ListCategoryController';
 
 import { CreateProductController } from './controllers/users/produtos/CreateProductController';
+import { GetProductsController } from './controllers/users/produtos/GetProductsController';
+import { DeleteProductController } from './controllers/users/produtos/DeleteProductController';
 
 import { CreatePixPaymentController } from '../src/controllers/users/mercadopago/CreatePixPaymentController';
 import { CreateCardPaymentController } from '../src/controllers/users/mercadopago/CreateCardPaymentController';
@@ -53,6 +56,9 @@ router.post('/mercadopago/webhook', MercadoPagoController.webhook);
 router.post('/userClient', new CreateUserClientController().handle )
 router.post('/userDesigner', new CreateUserDesignerController().handle )
 
+//Deletando qualquer usuario (Cliente & Designer)
+router.delete('/user/:userId', myAuthenticated, new DeleteUserController().handle);
+
 //logando users.
 router.post('/sessionClient', new AuthUserClientController().handle )
 router.post('/sessionDesigner', new AuthUserDesignerController().handle )
@@ -68,7 +74,9 @@ router.get('/category', myAuthenticated, new ListCategoryController().handle )
 
 // ------------------------ ROTAS PRODUTOS  ----------------------------------- //
 
-router.post('/product', myAuthenticated, new CreateProductController().handle )
 //router.post('/product', myAuthenticated, upload.single('file'), new CreateProductController().handle ) UTILIZANDO O MULTER
+router.post('/product', myAuthenticated, new CreateProductController().handle )
+router.get('/products', new GetProductsController().handle);
+router.delete('/product/:productId', myAuthenticated, new DeleteProductController().handle);
 
 export { router };
