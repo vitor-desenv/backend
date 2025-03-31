@@ -23,8 +23,9 @@ import { CreateProductController } from './controllers/users/produtos/CreateProd
 import { GetProductsController } from './controllers/users/produtos/GetProductsController';
 import { DeleteProductController } from './controllers/users/produtos/DeleteProductController';
 
-import { CreatePixPaymentController } from '../src/controllers/users/mercadopago/CreatePixPaymentController';
-import { CreateCardPaymentController } from '../src/controllers/users/mercadopago/CreateCardPaymentController';
+//import { CreatePixPaymentController } from '../src/controllers/users/mercadopago/CreatePixPaymentController';
+import { CreatePixPaymentController } from './controllers/users/mercadopago/CreatePixPaymentController';
+import { CreateCardPaymentController } from './controllers/users/mercadopago/CreateCardPaymentController';
 
 import { CreatePlansController } from './controllers/users/mercadopago/CreatePlansController';
 import { GetPlansController } from './controllers/users/mercadopago/GetPlansController';

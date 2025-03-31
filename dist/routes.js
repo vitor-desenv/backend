@@ -20,8 +20,9 @@ const ListCategoryController_1 = require("./controllers/users/ListCategoryContro
 const CreateProductController_1 = require("./controllers/users/produtos/CreateProductController");
 const GetProductsController_1 = require("./controllers/users/produtos/GetProductsController");
 const DeleteProductController_1 = require("./controllers/users/produtos/DeleteProductController");
-const CreatePixPaymentController_1 = require("../src/controllers/users/mercadopago/CreatePixPaymentController");
-const CreateCardPaymentController_1 = require("../src/controllers/users/mercadopago/CreateCardPaymentController");
+//import { CreatePixPaymentController } from '../src/controllers/users/mercadopago/CreatePixPaymentController';
+const CreatePixPaymentController_1 = require("./controllers/users/mercadopago/CreatePixPaymentController");
+const CreateCardPaymentController_1 = require("./controllers/users/mercadopago/CreateCardPaymentController");
 const CreatePlansController_1 = require("./controllers/users/mercadopago/CreatePlansController");
 const GetPlansController_1 = require("./controllers/users/mercadopago/GetPlansController");
 const MercadoPagoController_1 = require("./controllers/users/mercadopago/MercadoPagoController");
