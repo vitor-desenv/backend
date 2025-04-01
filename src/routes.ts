@@ -1,6 +1,6 @@
 import {Router} from 'express';
 
-import multer from 'multer';
+//import multer from 'multer';
 
 import uploadConfig from './config/multer';
 
@@ -33,7 +33,7 @@ import { MercadoPagoController } from './controllers/users/mercadopago/MercadoPa
 
 const router = Router();
 
-const upload = multer(uploadConfig.upload("./tmp"));
+//const upload = multer(uploadConfig.upload("./tmp"));
 
 // ------------------------ ROTAS DE PAGAMENTOS ----------------------------------- //
 
