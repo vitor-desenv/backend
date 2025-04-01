@@ -1,12 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = require("express");
-const multer_1 = __importDefault(require("multer"));
-const multer_2 = __importDefault(require("./config/multer"));
 const myAuthenticated_1 = require("./middlewares/myAuthenticated");
 const createUserClientController_1 = require("./controllers/users/createUserClientController");
 const createUserDesignerController_1 = require("./controllers/users/createUserDesignerController");
@@ -28,7 +23,7 @@ const GetPlansController_1 = require("./controllers/users/mercadopago/GetPlansCo
 const MercadoPagoController_1 = require("./controllers/users/mercadopago/MercadoPagoController");
 const router = (0, express_1.Router)();
 exports.router = router;
-const upload = (0, multer_1.default)(multer_2.default.upload("./tmp"));
+//const upload = multer(uploadConfig.upload("./tmp"));
 // ------------------------ ROTAS DE PAGAMENTOS ----------------------------------- //
 //Quando clicar em comprar algum produto:
 router.post('/payments/pix', myAuthenticated_1.myAuthenticated, new CreatePixPaymentController_1.CreatePixPaymentController().handle);
