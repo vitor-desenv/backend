@@ -3,6 +3,7 @@ import {Router} from 'express';
 //import multer from 'multer';
 
 import uploadConfig from './config/multer';
+import { ensureAuthenticated } from './middlewares/ensureAuthenticated';
 
 import { myAuthenticated } from './middlewares/myAuthenticated';
 
@@ -12,6 +13,8 @@ import { DeleteUserController } from './controllers/users/DeleteUsersController'
 
 import { AuthUserClientController } from './controllers/users/AuthUserClientController';
 import { AuthUserDesignerController } from './controllers/users/AuthUserDesignerController';
+
+import { PromoteUserController } from './controllers/moderador/PromoteUserController';
 
 import { DetailsUserClientController } from './controllers/users/DetailsUserClientController';
 import { DetailsUserDesignerController } from './controllers/users/DetailsUserDesignerController';
@@ -65,8 +68,11 @@ router.post('/sessionClient', new AuthUserClientController().handle )
 router.post('/sessionDesigner', new AuthUserDesignerController().handle )
 
 //Middlewares para validar que acesse rotas privadas e paginas com detalhes do usuario.
-router.get('/meClient', myAuthenticated, new DetailsUserClientController().handle )
-router.get('/meDesigner', myAuthenticated, new DetailsUserDesignerController().handle )
+router.get('/myClient', new DetailsUserClientController().handle )
+//router.get('/myDesigner', myAuthenticated, new DetailsUserDesignerController().handle )
+
+// Rota para promover um usuário
+router.patch('/userDesigner/:userId/promote', ensureAuthenticated('ADMIN'), new PromoteUserController().handle);
 
 // ------------------------ ROTAS CATEGORIAS  ----------------------------------- //
 router.post('/category', myAuthenticated, new CreateCategoryController().handle )

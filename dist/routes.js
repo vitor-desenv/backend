@@ -2,14 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = require("express");
+const ensureAuthenticated_1 = require("./middlewares/ensureAuthenticated");
 const myAuthenticated_1 = require("./middlewares/myAuthenticated");
 const createUserClientController_1 = require("./controllers/users/createUserClientController");
 const createUserDesignerController_1 = require("./controllers/users/createUserDesignerController");
 const DeleteUsersController_1 = require("./controllers/users/DeleteUsersController");
 const AuthUserClientController_1 = require("./controllers/users/AuthUserClientController");
 const AuthUserDesignerController_1 = require("./controllers/users/AuthUserDesignerController");
+const PromoteUserController_1 = require("./controllers/moderador/PromoteUserController");
 const DetailsUserClientController_1 = require("./controllers/users/DetailsUserClientController");
-const DetailsUserDesignerController_1 = require("./controllers/users/DetailsUserDesignerController");
 const CreateCategoryController_1 = require("./controllers/users/CreateCategoryController");
 const ListCategoryController_1 = require("./controllers/users/ListCategoryController");
 const CreateProductController_1 = require("./controllers/users/produtos/CreateProductController");
@@ -45,8 +46,10 @@ router.delete('/user/:userId', myAuthenticated_1.myAuthenticated, new DeleteUser
 router.post('/sessionClient', new AuthUserClientController_1.AuthUserClientController().handle);
 router.post('/sessionDesigner', new AuthUserDesignerController_1.AuthUserDesignerController().handle);
 //Middlewares para validar que acesse rotas privadas e paginas com detalhes do usuario.
-router.get('/meClient', myAuthenticated_1.myAuthenticated, new DetailsUserClientController_1.DetailsUserClientController().handle);
-router.get('/meDesigner', myAuthenticated_1.myAuthenticated, new DetailsUserDesignerController_1.DetailsUserDesignerController().handle);
+router.get('/myClient', new DetailsUserClientController_1.DetailsUserClientController().handle);
+//router.get('/myDesigner', myAuthenticated, new DetailsUserDesignerController().handle )
+// Rota para promover um usuário
+router.patch('/userDesigner/:userId/promote', (0, ensureAuthenticated_1.ensureAuthenticated)('ADMIN'), new PromoteUserController_1.PromoteUserController().handle);
 // ------------------------ ROTAS CATEGORIAS  ----------------------------------- //
 router.post('/category', myAuthenticated_1.myAuthenticated, new CreateCategoryController_1.CreateCategoryController().handle);
 //lista das categorias:
