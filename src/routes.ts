@@ -68,7 +68,7 @@ router.post('/sessionClient', new AuthUserClientController().handle )
 router.post('/sessionDesigner', new AuthUserDesignerController().handle )
 
 //Middlewares para validar que acesse rotas privadas e paginas com detalhes do usuario.
-router.get('/myClient', new DetailsUserClientController().handle )
+router.get('/myClient', myAuthenticated,new DetailsUserClientController().handle )
 //router.get('/myDesigner', myAuthenticated, new DetailsUserDesignerController().handle )
 
 // Rota para promover um usuário
