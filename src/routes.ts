@@ -34,7 +34,6 @@ import { CreateCardPaymentController } from './controllers/users/mercadopago/Cre
 import { CreatePlansController } from './controllers/users/mercadopago/CreatePlansController';
 import { GetPlansController } from './controllers/users/mercadopago/GetPlansController';
 import { MercadoPagoController } from './controllers/users/mercadopago/MercadoPagoController';
-import prismaClient from './prisma';
 
 const router = Router();
 
@@ -70,27 +69,7 @@ router.post('/sessionClient', new AuthUserClientController().handle )
 router.post('/sessionDesigner', new AuthUserDesignerController().handle )
 
 //Middlewares para validar que acesse rotas privadas e paginas com detalhes do usuario.
-router.get('/myClient', myAuthenticated, async (req: Request, res: Response) => {
-    try {
-        // Acesso ao usuário logado com base no ID extraído do token
-        const user = await prismaClient.userClient.findUnique({
-            where: { id: req.user_id },  // usa o ID do usuário que foi armazenado no middleware
-            select: {
-                id: true,
-                name: true,
-                email: true
-            }
-        })
-
-        if (!user) {
-            return res.status(404).json({ message: 'Usuário não encontrado' })
-        }
-
-        return res.json(user)  // Retorna os dados do usuário logado
-    } catch (err) {
-        return res.status(500).json({ message: 'Erro interno' })
-    }
-})
+router.get('/myClient', myAuthenticated,new DetailsUserClientController().handle )
 //router.get('/myDesigner', myAuthenticated, new DetailsUserDesignerController().handle )
 
 // Rota para promover um usuário
