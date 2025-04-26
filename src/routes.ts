@@ -75,6 +75,11 @@ router.get('/myClient', myAuthenticated, async (req: Request, res: Response) => 
         // Acesso ao usuário logado com base no ID extraído do token
         const user = await prismaClient.userClient.findUnique({
             where: { id: req.user_id },  // usa o ID do usuário que foi armazenado no middleware
+            select: {
+                id: true,
+                name: true,
+                email: true
+            }
         })
 
         if (!user) {
